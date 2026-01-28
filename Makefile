@@ -4,7 +4,7 @@ COMPOSE_FILE = ./srcs/docker-compose.yml
 .PHONY: up down build restart logs ps
 
 up:
-	$(COMPOSE) -f $(COMPOSE_FILE) up -d
+	$(COMPOSE) -f $(COMPOSE_FILE) up
 
 down:
 	$(COMPOSE) -f $(COMPOSE_FILE) down
