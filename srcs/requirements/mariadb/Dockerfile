@@ -1,11 +1,16 @@
-FROM debian:bookworm
+FROM debian:bullseye
 
-RUN apt-get update && apt-get install -y mariadb-server \
- && rm -rf /var/lib/apt/lists/*
+# Install last version
+RUN apt update && apt upgrade -y
 
-COPY conf/50-server.cnf /etc/mysql/mariadb.conf.d/50-server.cnf
-COPY script.sh /usr/local/bin/script.sh
+# Install mariadb and netcat (to launch mariadb before wordpress)
+RUN apt install -y mariadb-server netcat
 
-RUN chmod +x /usr/local/bin/script.sh
+# Copie un fichier du contexte local vers l'interieur du conteneur
+COPY ./mdb-conf.sh /mdb-conf.sh
 
-CMD ["/usr/local/bin/script.sh"]
+# Give permission for running
+RUN chmod +x /mdb-conf.sh
+
+# Execute the .sh when the container starts
+ENTRYPOINT ["./mdb-conf.sh"]

@@ -1,22 +1,21 @@
-FROM debian:bookworm
+FROM debian:bullseye
 
-RUN apt-get update && apt-get upgrade && apt-get install -y \
-    wget \
-    php8.2 \
-    php-fpm \
-    php-mysql \
-    mariadb-client
+# Install updates
+RUN apt update && apt upgrade -y
 
-RUN wget https://fr.wordpress.org/wordpress-6.0-fr_FR.tar.gz -P /var/www
-RUN cd /var/www && tar -xzf wordpress-6.0-fr_FR.tar.gz && rm wordpress-6.0-fr_FR.tar.gz
-RUN	chown -R root:root /var/www/wordpress
+# Install the required packages
+# curl: outil en ligne de commande pour faire des requetes HTTP
+# php: Installe le moteur php principal
+# php-fpm: gestionnaire de processus php qui execute le php independamment, permet de faire tourner PHP en mode serveur
+# php-mysql: extension php pour se connecter a une base de donnees MySQL
+# mariadb-client: Permet d'utiliser la commande mariadb ou mysql pour se connecter à un serveur MariaDB distant.
+RUN apt install -y curl php php7.4-fpm php-mysql mariadb-client
 
-RUN wget https://raw.githubusercontent.com/wp-cli/builds/gh-pages/phar/wp-cli.phar
-RUN chmod +x wp-cli.phar
-RUN mv wp-cli.phar /usr/local/bin/wp
+# Copier une fichier de mon contexte local vers le systeme de fichiers du conteneur
+COPY ./wp_conf.sh /
 
-COPY ./conf/www.conf /etc/php/8.2/fpm/pool.d/.
-COPY script.sh .
+# Change the permission of the script to make it executable
+RUN chmod +x wp_conf.sh
 
-RUN chmod +x script.sh
-CMD ["./script.sh"]
+# Execute the script when the container starts
+ENTRYPOINT ["sh", "./wp_conf.sh"]

@@ -1,15 +1,29 @@
-FROM debian:bookworm
+FROM debian:bullseye
 
-RUN apt-get update && apt-get upgrade -y && apt-get install -y \
-    nginx \
-    openssl
+# Install updates
+RUN apt update && apt upgrade -y
 
+# Install nginx and TSL
+RUN apt install -y nginx openssl
+
+# Creates a directory pour un truc joli
 RUN mkdir -p /etc/nginx/ssl
 
-RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout /etc/nginx/ssl/inception.key -subj "/C=FR/ST=IDF/L=Paris/O=42/OU=42/CN=login.42.fr/UID=login"
-RUN chmod 755 /var/www/html
-RUN chown -R www-data:www-data /var/www/html
+# Generate the ssl certificate
+RUN openssl req -x509 -nodes -out /etc/nginx/ssl/inception.crt -keyout \
+    /etc/nginx/ssl/inception.key -subj "/C=MO/ST=KH/L=KH/O=42/OU=42/CN=${DOMAIN_NAME}/UID=${WP_ADMIN_NAME}"
 
-COPY ./conf/nginx.conf /etc/nginx/nginx.conf
+# Je met la config dans le conteneur
+COPY ./nginx.conf /etc/nginx/nginx.conf
 
+# Creates a nouveau directory pour un truc joli
+RUN mkdir -p /var/www/wordpress
+
+# change the owner of the wordpress directory to www-data
+RUN chown -R www-data:www-data /var/www/wordpress
+
+# Execute a command when the container starts
+# nginx: launch the nginx program
+# -g: gives a config directive to a command line
+# daemon off: asks nginx not to turn in background
 CMD ["nginx", "-g", "daemon off;"]
