@@ -7,7 +7,7 @@ RUN apt update && apt upgrade -y
 RUN apt install -y mariadb-server netcat
 
 # Copie un fichier du contexte local vers l'interieur du conteneur
-COPY ./mdb-conf.sh /mdb-conf.sh
+COPY ./tools/mdb-conf.sh /mdb-conf.sh
 
 # Give permission for running
 RUN chmod +x /mdb-conf.sh

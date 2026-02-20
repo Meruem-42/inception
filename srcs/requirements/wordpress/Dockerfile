@@ -12,10 +12,10 @@ RUN apt update && apt upgrade -y
 RUN apt install -y curl php php7.4-fpm php-mysql mariadb-client
 
 # Copier une fichier de mon contexte local vers le systeme de fichiers du conteneur
-COPY ./wp_conf.sh /
+COPY ./tools/script_wp.sh /script_wp.sh
 
 # Change the permission of the script to make it executable
-RUN chmod +x wp_conf.sh
+RUN chmod +x script_wp.sh
 
 # Execute the script when the container starts
-ENTRYPOINT ["sh", "./wp_conf.sh"]
+ENTRYPOINT ["sh", "./script_wp.sh"]
