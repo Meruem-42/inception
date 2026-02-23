@@ -1,7 +1,7 @@
 
 services:
   nginx:
-    image: nginx # The one modified by the user (me)
+    image: nginx:user
     container_name: nginx
     build: ./requirements/nginx
     ports:
@@ -15,7 +15,7 @@ services:
     restart: always
 
   mariadb:
-    image: mariadb
+    image: mariadb:user
     container_name: mariadb
     build: ./requirements/mariadb
     volumes:
@@ -32,7 +32,7 @@ services:
       retries: 10
 
   wordpress:
-    image: wordpress
+    image: wordpress:user
     container_name: wordpress
     build: ./requirements/wordpress
     depends_on:
