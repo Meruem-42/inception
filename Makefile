@@ -26,7 +26,10 @@ clean : down
 re: clean all
 
 logs:
-	$(COMPOSE) -f $(COMPOSE_FILE) logs -f
+	docker compose logs -f
 
 ps:
-	$(COMPOSE) -f $(COMPOSE_FILE) ps
+	docker compose ps
+
+ls:
+	docker volume ls
